@@ -1,8 +1,24 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from .Serializer import ReviewSerializer, CommentSerializer, LikeSerializer
+from .models import Review
+from rest_framework import viewsets
 
 
 # Create your views here.
-def reviews(request):
-    return HttpResponse("Hello, world. You're at the reviews index.")
 
+class ReviewsViewSet(viewsets.ModelViewSet):
+    queryset = Review.objects.all()
+    # specify serializer to be used
+    serializer_class = ReviewSerializer
+
+class CommentsViewSet(viewsets.ModelViewSet):
+    queryset = Review.objects.all()
+    # specify serializer to be used
+    serializer_class = ReviewSerializer
+
+
+class LikesViewSet(viewsets.ModelViewSet):
+    queryset = Review.objects.all()
+    # specify serializer to be used
+    serializer_class = ReviewSerializer
