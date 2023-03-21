@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'reviews.apps.ReviewsConfig',
     'users.apps.UsersConfig',
     'food.apps.FoodConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
