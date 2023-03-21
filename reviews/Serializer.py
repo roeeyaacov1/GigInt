@@ -3,9 +3,10 @@ from .models import Review, Comment, Like
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    temp = serializers.SerializerMethodField()
     class Meta:
         model = Review
-        fields = '__all__'
+        exclude = ('pub_date', 'user', )
 
 
 class CommentSerializer(serializers.ModelSerializer):
