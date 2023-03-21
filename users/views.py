@@ -1,28 +1,20 @@
-from users.serializers import UserSerializer
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.models import User
 from rest_framework import viewsets
-from .models import User
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from users.serializers import UserSerializer
 
 
-# Create your views here.
-
-class UserViewSet(viewsets.ViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
+    # specify serializer to be used
     serializer_class = UserSerializer
 
-    def create(self, request, *args, **kwargs):
-        pass
+    @action(detail=True, methods=['get'])
+    def get_user_summary(self, username):
+        user = get_object_or_404(User, username=username)
+        serializer = self.get_serializer(user)
+        data = serializer.data
 
-    def retrieve(self, request, *args, **kwargs):
-        pass
-
-    def update(self, request, *args, **kwargs):
-        pass
-
-    def destroy(self, request, *args, **kwargs):
-        pass
-
-    def list(self, request, *args, **kwargs):
-        pass
-
-    def partial_update(self, request, *args, **kwargs):
-        pass
+        return Response(data)
