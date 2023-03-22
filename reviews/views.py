@@ -20,7 +20,7 @@ class ReviewsViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
     def get_queryset(self):
-        return self.queryset.annotate(num_likes=Count('comment'))
+        return self.queryset.annotate(num_likes=Count('Like'))
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -41,11 +41,17 @@ class ReviewsViewSet(viewsets.ModelViewSet):
 
 
 class CommentsViewSet(viewsets.ModelViewSet):
-    #permission_classes = (permissions.AllowAny,)
     queryset = Comment.objects.all()
 
     # specify serializer to be used
     serializer_class = CommentSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        data = serializer.data
+        print(data)
+        return Response(data)
 
 
 class LikesViewSet(viewsets.ModelViewSet):
