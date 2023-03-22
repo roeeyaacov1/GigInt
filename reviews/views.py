@@ -19,8 +19,8 @@ class ReviewsViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-    def get_queryset(self):
-        return self.queryset.annotate(num_likes=Count('Like'))
+    #def get_queryset(self):
+    #    return self.queryset.annotate(num_likes=Count('Like'))
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()

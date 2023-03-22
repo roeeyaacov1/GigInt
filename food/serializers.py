@@ -3,6 +3,8 @@ from .models import Food
 
 
 class FoodSerializer(serializers.ModelSerializer):
+    num_reviews = serializers.IntegerField()
+
     class Meta:
         model = Food
-        fields = '__all__'
+        fields = ['name', 'num_reviews']
