@@ -5,8 +5,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from Gigint.settings import logger
-from reviews.Serializer import ReviewSerializer
-from reviews.models import Review
+from reviews.Serializer import ReviewSerializer, CommentSerializer
+from reviews.models import Review, Comment
 from users.serializers import UserSerializer
 
 
@@ -19,12 +19,21 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_user_summary(self, request, pk=None):
         user = get_object_or_404(User, id=pk)
         serializer = self.get_serializer(user)
-        data = serializer.data
-        logger.info(f"User:  {user}")
+        user_data = serializer.data
+        logger.info(f"User1:  {user}")
 
-        reviews = Review.objects.all() # filter(user=user)
-        review_serializer = ReviewSerializer(reviews)
-        data += review_serializer.data
-        logger.info(f"Reviews:  {review_serializer.data}")
+        reviews = Review.objects.filter(user=user)
+        logger.info(reviews)
+        review_serializer = ReviewSerializer(reviews, many=True)
+        logger.info(review_serializer.data)
+        reviews_data = review_serializer.data
 
-        return Response(data)
+        comments = Comment.objects.filter(user=user)
+        logger.info(comments)
+        comment_serializer = CommentSerializer(comments, many=True)
+        logger.info(comment_serializer.data)
+        comments_data = comment_serializer.data
+
+        logger.info(f"Reviews:  {comment_serializer.data}")
+        json_data = {'user': user_data, 'reviews': reviews_data, 'comments': comments_data}
+        return Response(json_data)
