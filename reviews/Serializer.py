@@ -1,18 +1,6 @@
 from rest_framework import serializers
-from .models import Review, Comment, Like
-
-
-class ReviewSerializer(serializers.ModelSerializer):
-    num_likes = serializers.IntegerField()
-    pk = serializers.SerializerMethodField(method_name="get_id")
-
-    def get_id(self, object):
-        return object.pk
-
-    class Meta:
-        model = Review
-        # exclude = ('pub_date', )
-        fields = ('pk', 'food', 'user', 'title', 'description', 'num_likes')
+from .models import Review, Comment
+from food.serializers import FoodSerializer
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -21,7 +9,15 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class LikeSerializer(serializers.ModelSerializer):
+class ReviewSerializer(serializers.ModelSerializer):
+    pk = serializers.SerializerMethodField(method_name="get_id")
+    num_comment = serializers.IntegerField()
+    food = FoodSerializer()
+
+    def get_id(self, object):
+        return object.pk
+
     class Meta:
-        model = Like
-        fields = '__all__'
+        model = Review
+        fields = ('pk', 'food', 'user', 'title', 'description', 'likes', 'num_comment')
+
