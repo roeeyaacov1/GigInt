@@ -1,5 +1,6 @@
 ### Pycharm ###
 .idea/
+/Gigint/.idea/
 
 ### Django ###
 *.log
