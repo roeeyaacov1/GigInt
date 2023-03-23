@@ -1,15 +1,11 @@
-from django.db.models import Count, Max
-from django.shortcuts import render
-from django.http import HttpResponse
-
-from food.views import FoodViewSet
-from .serializers import ReviewSerializer, CommentSerializer
-from .models import Review, Comment
+from django.db.models import Count
 from rest_framework import viewsets
-from rest_framework.response import Response
 from rest_framework.decorators import action
-from rest_framework import permissions
+from rest_framework.response import Response
+
 from Gigint.settings import logger
+from .models import Review, Comment
+from .serializers import ReviewSerializer, CommentSerializer
 
 
 # Create your views here.
@@ -24,14 +20,11 @@ class ReviewsViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset.annotate(num_comment=Count('comment'), num_likes=Count('likes'))
-        # count_like = Review.objects.all()
-        # queryset = queryset.annotate(num_likes=Count('likes'))
         return queryset
 
     def retrieve(self, request, *args, **kwargs):
         logger.info("Check")
         instance = self.get_object()
-        #instance.food = FoodViewSet.get_queryset(instance.food)
         logger.info(instance.food)
         serializer = self.get_serializer(instance)
         logger.info("")
@@ -70,7 +63,7 @@ class CommentsViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
 
     def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object() # its a dict
+        instance = self.get_object()
         logger.warning(instance)
         serializer = self.get_serializer(instance)
         data = serializer.data

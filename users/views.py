@@ -24,18 +24,14 @@ class UserViewSet(viewsets.ModelViewSet):
         logger.info(f"User1:  {user}")
 
         reviews = Review.objects.filter(user=user).annotate(num_comment=Count('comment'), num_likes=Count('likes'))
-        # logger.info(reviews)
         review_serializer = ReviewSerializer(reviews, many=True)
-        # logger.info(review_serializer.data)
         reviews_data = review_serializer.data
 
-        comments = Comment.objects.filter(user=user).values() # its a queryset
+        comments = Comment.objects.filter(user=user).values()
         logger.info(comments)
         logger.warning(comments)
         comment_serializer = CommentSerializer(comments, many=True)
-        # logger.info(comment_serializer.data)
         comments_data = comment_serializer.data
 
-        # logger.info(f"Reviews:  {comment_serializer.data}")
         json_data = {'user': user_data, 'reviews': reviews_data, 'comments': comments_data}
         return Response(json_data)
