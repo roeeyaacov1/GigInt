@@ -20,6 +20,7 @@ class ReviewsViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+
     def get_queryset(self):
         queryset = self.queryset.annotate(num_comment=Count('comment'), num_likes=Count('likes'))
         #count_like = Review.objects.all()

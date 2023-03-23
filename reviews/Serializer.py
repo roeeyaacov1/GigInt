@@ -15,8 +15,8 @@ class ReviewSerializer(serializers.ModelSerializer):
     num_likes = serializers.IntegerField()
     food = FoodSerializer()
 
-    def get_id(self, object):
-        return object.pk
+    #def get_id(self, object):
+    #    return object.pk
 
     class Meta:
         model = Review
