@@ -21,7 +21,10 @@ class ReviewsViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
     def get_queryset(self):
-        return self.queryset.annotate(num_comment=Count('comment'))
+        queryset = self.queryset.annotate(num_comment=Count('comment'), num_likes=Count('likes'))
+        #count_like = Review.objects.all()
+        #queryset = queryset.annotate(num_likes=Count('likes'))
+        return queryset
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -45,6 +48,11 @@ class ReviewsViewSet(viewsets.ModelViewSet):
         commented_review = self.get_queryset().order_by('num_comment').last()
         serializer = self.get_serializer_class()(commented_review)
         return Response(serializer.data)
+
+    @action(detail=False, methods=["GET"])
+    def max_likes(self, request,):
+        all_response = Response.object.all()
+        return Response(Review.likes.count())
 
 
 class CommentsViewSet(viewsets.ModelViewSet):

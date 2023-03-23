@@ -12,6 +12,7 @@ class CommentSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
     pk = serializers.SerializerMethodField(method_name="get_id")
     num_comment = serializers.IntegerField()
+    num_likes = serializers.IntegerField()
     food = FoodSerializer()
 
     def get_id(self, object):
@@ -19,5 +20,5 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ('pk', 'food', 'user', 'title', 'description', 'likes', 'num_comment')
+        fields = ['pk', 'food', 'user', 'title', 'description', 'likes', 'num_comment', 'num_likes']
 
