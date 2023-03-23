@@ -25,7 +25,8 @@ class FoodViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get'])
     def get_food_summary(self, request, pk=None):
-        food = get_object_or_404(Food, id=pk)
+        #food = get_object_or_404(Food, id=pk)
+        food = self.get_queryset().filter(id=pk).get()
         serializer = self.get_serializer(food)
         food_data = serializer.data
         logger.info(f"Food:  {food}")
@@ -36,16 +37,12 @@ class FoodViewSet(viewsets.ModelViewSet):
         logger.info(review_serializer.data)
         reviews_data = review_serializer.data
 
-        for review in reviews:
+        for index, review in enumerate(reviews):
             comments = Comment.objectcs.filter(review=review)
             comment_serializer = CommentSerializer(comments, many=True)
             logger.info(comment_serializer.data)
             comments_data = comment_serializer.data
-            reviews_data[review].append('comments': comments_data)
+            reviews_data[index]['comments'] = comments_data
 
-
-        # logger.info(f"Reviews:  {comment_serializer.data}")
-        json_data = {'food': food_data, 'reviews': reviews_data, 'comments': comments_data}
-        # json_data = {'food': food_data, 'reviews': reviews_data}
-        # json_data = {'food': food_data, 'comments': comments_data}
+        json_data = {'food': food_data, 'reviews': reviews_data}
         return Response(json_data)
