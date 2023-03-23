@@ -5,7 +5,7 @@ from .views import *
 router = routers.DefaultRouter()
 router.register(r'review', ReviewsViewSet)
 router.register(r'comment', CommentsViewSet)
-router.register(r'like', LikesViewSet)
+#router.register(r'like', LikesViewSet)
 
 
 urlpatterns = [
