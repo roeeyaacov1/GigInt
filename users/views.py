@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User
 from rest_framework import viewsets
@@ -5,7 +6,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from Gigint.settings import logger
-from reviews.Serializer import ReviewSerializer, CommentSerializer
+from reviews.serializers import ReviewSerializer, CommentSerializer
 from reviews.models import Review, Comment
 from users.serializers import UserSerializer
 
@@ -22,18 +23,19 @@ class UserViewSet(viewsets.ModelViewSet):
         user_data = serializer.data
         logger.info(f"User1:  {user}")
 
-        reviews = Review.objects.filter(user=user)
-        logger.info(reviews)
+        reviews = Review.objects.filter(user=user).annotate(num_comment=Count('comment'), num_likes=Count('likes'))
+        # logger.info(reviews)
         review_serializer = ReviewSerializer(reviews, many=True)
-        logger.info(review_serializer.data)
+        # logger.info(review_serializer.data)
         reviews_data = review_serializer.data
 
-        comments = Comment.objects.filter(user=user)
+        comments = Comment.objects.filter(user=user).values() # its a queryset
         logger.info(comments)
+        logger.warning(comments)
         comment_serializer = CommentSerializer(comments, many=True)
-        logger.info(comment_serializer.data)
+        # logger.info(comment_serializer.data)
         comments_data = comment_serializer.data
 
-        logger.info(f"Reviews:  {comment_serializer.data}")
+        # logger.info(f"Reviews:  {comment_serializer.data}")
         json_data = {'user': user_data, 'reviews': reviews_data, 'comments': comments_data}
         return Response(json_data)

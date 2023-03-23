@@ -1,7 +1,9 @@
 from django.db.models import Count, Max
 from django.shortcuts import render
 from django.http import HttpResponse
-from .Serializer import ReviewSerializer, CommentSerializer
+
+from food.views import FoodViewSet
+from .serializers import ReviewSerializer, CommentSerializer
 from .models import Review, Comment
 from rest_framework import viewsets
 from rest_framework.response import Response
@@ -20,17 +22,21 @@ class ReviewsViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-
     def get_queryset(self):
         queryset = self.queryset.annotate(num_comment=Count('comment'), num_likes=Count('likes'))
-        #count_like = Review.objects.all()
-        #queryset = queryset.annotate(num_likes=Count('likes'))
+        # count_like = Review.objects.all()
+        # queryset = queryset.annotate(num_likes=Count('likes'))
         return queryset
 
     def retrieve(self, request, *args, **kwargs):
+        logger.info("Check")
         instance = self.get_object()
+        #instance.food = FoodViewSet.get_queryset(instance.food)
+        logger.info(instance.food)
         serializer = self.get_serializer(instance)
+        logger.info("")
         data = serializer.data
+        logger.info("Check3")
 
         return Response(data)
 
@@ -51,9 +57,10 @@ class ReviewsViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @action(detail=False, methods=["GET"])
-    def max_likes(self, request,):
-        all_response = Response.object.all()
-        return Response(Review.likes.count())
+    def max_likes(self, request):
+        liked_review = self.get_queryset().order_by('num_likes').last()
+        serializer = self.get_serializer_class()(liked_review)
+        return Response(serializer.data)
 
 
 class CommentsViewSet(viewsets.ModelViewSet):
@@ -63,8 +70,8 @@ class CommentsViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
 
     def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
+        instance = self.get_object() # its a dict
+        logger.warning(instance)
         serializer = self.get_serializer(instance)
         data = serializer.data
         return Response(data)
-
