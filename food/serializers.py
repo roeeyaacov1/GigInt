@@ -8,3 +8,9 @@ class FoodSerializer(serializers.ModelSerializer):
     class Meta:
         model = Food
         fields = ['name', 'num_reviews']
+
+
+class FoodBasicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Food
+        fields = ['name']

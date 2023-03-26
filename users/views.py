@@ -21,15 +21,12 @@ class UserViewSet(viewsets.ModelViewSet):
         user = get_object_or_404(User, id=pk)
         serializer = self.get_serializer(user)
         user_data = serializer.data
-        logger.info(f"User1:  {user}")
 
         reviews = Review.objects.filter(user=user).annotate(num_comment=Count('comment'), num_likes=Count('likes'))
         review_serializer = ReviewSerializer(reviews, many=True)
         reviews_data = review_serializer.data
 
         comments = Comment.objects.filter(user=user).values()
-        logger.info(comments)
-        logger.warning(comments)
         comment_serializer = CommentSerializer(comments, many=True)
         comments_data = comment_serializer.data
 
