@@ -32,7 +32,7 @@ class FoodViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(food)
         food_data = serializer.data
 
-        reviews = Review.objects.filter(food=food).annotate(num_comment=Count('comment'), num_likes=Count('likes'))
+        reviews = Review.objects.filter(food=food).annotate(num_comment=Count('comments'), num_likes=Count('likes'))
         review_serializer = ReviewSerializer(reviews, many=True)
         reviews_data = review_serializer.data
 

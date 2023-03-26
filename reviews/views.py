@@ -2,6 +2,7 @@ from django.db.models import Count
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 
 from Gigint.settings import logger
 from .models import Review, Comment
@@ -19,26 +20,8 @@ class ReviewsViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
     def get_queryset(self):
-        queryset = self.queryset.annotate(num_comment=Count('comment'), num_likes=Count('likes'))
+        queryset = self.queryset.annotate(num_comment=Count('comments'), num_likes=Count('likes'))
         return queryset
-
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        data = serializer.data
-
-        return Response(data)
 
     @action(detail=True, methods=["GET"])
     def get_review_comments(self, request, pk):
@@ -63,23 +46,7 @@ class ReviewsViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-class CommentsViewSet(viewsets.ModelViewSet):
+class CommentsViewSet(viewsets.ModelViewSet):  # TODO: add review to create() comment
     queryset = Comment.objects.all().values()
     # specify serializer to be used
     serializer_class = CommentSerializer
-
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        data = serializer.data
-        return Response(data)
