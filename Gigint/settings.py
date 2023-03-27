@@ -11,7 +11,23 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import logging
 
+# Create a logger
+logger = logging.getLogger(__name__)
+
+# Set the logging level
+logger.setLevel(logging.INFO)
+
+# Create a file handler
+handler = logging.FileHandler('log.log')
+
+# Set the logging format
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+handler.setFormatter(formatter)
+
+# Add the handler to the logger
+logger.addHandler(handler)
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -37,9 +53,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'drf_yasg',
     'reviews.apps.ReviewsConfig',
-    'users.apps.UsersConfig',
+    #'users.apps.UsersConfig',
     'food.apps.FoodConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
