@@ -4,10 +4,11 @@ from .models import Food
 
 class FoodSerializer(serializers.ModelSerializer):
     num_reviews = serializers.IntegerField()
+    pk = Food.pk
 
     class Meta:
         model = Food
-        fields = ['name', 'num_reviews', 'image']
+        fields = ['pk', 'name', 'num_reviews', 'image']
 
 
 class FoodBasicSerializer(serializers.ModelSerializer):
